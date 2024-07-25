@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Consulta de Clase Espectral</title>
+    <script>
+    function clasificarEstrella(event) {
+        event.preventDefault();
+        const temperature = parseFloat(document.getElementById('temperature').value);
+        const starColor = parseFloat.getElementById('starColor').value;
+
+        const data = {
+            "Temperature (K)": temperature,
+            "Star color": starColor
+        };
+
+        fetch('/predict', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                document.getElementById('resultado').innerText = 'Error: ' + data.error;
+            } else {
+                document.getElementById('resultado').innerText = 'La clase espectral es: ' + data.categoria;
+            }
+        })
+        .catch(error => {
+            document.getElementById('resultado').innerText = 'Error en la solicitud.';
+            console.error('Error:', error);
+        });
+    }
+    </script>
+</head>
+<body>
+    <h1>Consulta de Clase Espectral</h1>
+    <form id="formulario" onsubmit="clasificarEstrella(event)">
+        <label for="temperature">Temperature (K):</label>
+        <input type="text" id="temperature" name="Temperature (K)"><br><br>
+        <label for="starColor">Star Color:</label>
+        <input type="text" id="starColor" name="Star color"><br><br>
+        <input type="submit" value="Consultar">
+    </form>
+    <p id="resultado"></p>
+</body>
+</html>
